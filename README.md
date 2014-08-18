@@ -1,4 +1,4 @@
-A collection of I/O utilities
+A Collection of I/O utilities
 ===
 
 
