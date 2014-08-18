@@ -1,0 +1,18 @@
+#targets: /mnt/osd-device-0-data, /mnt/osd-device-1-data,
+#    /mnt/osd-device-2-data, /mnt/osd-device-3-data, /mnt/osd-device-4-data,
+#    /mnt/osd-device-5-data, /mnt/osd-device-6-data, /mnt/osd-device-7-data,
+#    /mnt/osd-device-8-data, /mnt/osd-device-9-data, /mnt/osd-device-10-data 
+
+hosts: bigshot04
+targets: /tmp/ext
+filesize: 1G
+mode: write
+dio: true
+qd: 1, 2, 4, 8, 16, 32
+numreqs: 256
+looseordering: true
+reqsize: 32768
+outdir: /chexport/users/fwang2/xdd-results
+XDD_cmd: /tmp/xdd
+email: fwang2@gmail.com
+subject: ext4 on bigshot04 single device
