@@ -6,6 +6,8 @@ import os
 import os.path
 import sys
 import re
+import shlex
+import subprocess
 
 args = None
 MAGIC='8888'
@@ -21,6 +23,7 @@ def parse_args():
     parser.add_argument('-c', '--fcount', type=int, default=1, help="total # of files")
     parser.add_argument('-o', '--output', required=True, help="output directory")
     parser.add_argument('-v', '--verbose', default=False, action="store_true", help="debug output")
+    parser.add_argument("--stripe-count", type=int, default=4, help="specify stripe count")
 
     myargs = parser.parse_args()
     return myargs
@@ -42,6 +45,17 @@ def conv_mb(size):
         print("Unknown size: %s" % size)
         sys.exit(1)
 
+def setstripe(dir):
+
+    cmd = "lfs setstripe -c %s %s" % (args.stripe_count, dir)
+    if args.verbose:
+        print(cmd)
+    p = subprocess.Popen(shlex.split(cmd), stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE)
+    stdout, stderr = p.communicate()
+    if stderr:
+        print(stderr)
+        sys.exit(1)
 
 def main():
 
@@ -55,6 +69,11 @@ def main():
     outdir = os.path.abspath(args.output)
     if not os.path.exists(outdir):
         os.mkdir(outdir)
+    else:
+        print("Detect exsiting %s, pls rename or remove to proceed" % outdir)
+        exit(1)
+
+    setstripe(outdir)
 
     buf = rand_str()
 
