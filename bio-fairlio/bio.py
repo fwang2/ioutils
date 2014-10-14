@@ -4,9 +4,30 @@ bio.py - replacement for block IO testing in shell
     major difference is, we just extract results, we don't tally
     and leave data processing to post analysis
 
-__author__ = fwang2@gmail.com
+
+By default, it is expected this script will be launched from a
+control host and pdsh into slave hosts (with local devices) and
+perform block-level tests.
+
+A copy of "fair-lio" binary should be accessible through absolute path.
+You can change the path with --fbin option though.
+
+Example 1: To survey block devices /dev/sdc /dev/sdd on host 'warp1a'
+Only 1 iteration per test, 10 seconds per test.
+
+    ./bio.py --mode survey-lun --hosts warp1a --devices /dev/sdc /dev/sdd \
+                    --iters 1 --runtime 10 -v
+
+Example 2: You can also use wildcards to expand the device list such as:
+
+    ./bio.py --mode survey-lun --host warp1a --devices /dev/sd{c..z} \
+                    --iters 1 --runtime 10 -v
+
+The bash brace expansion using ranges /dev/sd{c..z} from
+/dev/sdc /dev/sdd /dev/sde all the way to /dev/sdz
 
 """
+__author__ = "fwang2@gmail.com"
 import argparse
 import random
 import time
@@ -46,8 +67,8 @@ def parse_args():
     parser.add_argument('-v', '--verbose', default=False, action="store_true", help="debug output")
     parser.add_argument('--saveruns', default=False, action="store_true", help="Save run permu")
     parser.add_argument('--dryrun', default=False, action="store_true", help="Dry run only, default: false")
-    parser.add_argument('--fbin', default="/root/bio/fair-lio",
-            help="Specify a path to fair-lio. Default:/root/bio/fair-lio")
+    parser.add_argument('--fbin', default="/root/ioutils/bio-fairlio/fair-lio",
+            help="Specify a path to fair-lio. Default:/root/ioutils/bio-fair/fair-lio")
     parser.add_argument('--disable-pdsh', default=False, action="store_true", help="Don't use pdsh")
 
     myargs = parser.parse_args()
@@ -122,7 +143,7 @@ def extract_result(out, err):
     if err:
         eprint("Error on extracting result\n")
         eprint(err)
-        sys.exit(1)
+        return
 
     res = re.search(r"total:\s+(.+)\s+MB/s skew", out)
 
@@ -186,7 +207,9 @@ def do_survey_lun():
                             else:
                                 print
 
-                            if not args.dryrun:
+                            if args.dryrun:
+                                print "\t", cmd
+                            else:
                                 p = subprocess.Popen(shlex.split(cmd), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                                 stdout, stderr = p.communicate()
                                 bw = extract_result(stdout, stderr)
@@ -225,7 +248,9 @@ def do_survey_host():
         else:
             print
 
-        if not args.dryrun:
+        if args.dryrun:
+            print "dry run ..."
+        else:
             p = subprocess.Popen(shlex.split(cmd), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             stdout, stderr = p.communicate()
             bw = extract_result(stdout, stderr)
