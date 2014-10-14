@@ -24,7 +24,17 @@ Example 2: You can also use wildcards to expand the device list such as:
                     --iters 1 --runtime 10 -v
 
 The bash brace expansion using ranges /dev/sd{c..z} from
-/dev/sdc /dev/sdd /dev/sde all the way to /dev/sdz
+/dev/sdc /dev/sdd /dev/sde all the way to /dev/sdz.
+
+Runing locally, you can use --disable-pdsh to disable pdsh-based invokation.
+This generally saves some time and more reliable.
+
+
+TODO:
+
+    - add uniform check, which survey individual LUNs only.
+
+
 
 """
 __author__ = "fwang2@gmail.com"
@@ -143,7 +153,7 @@ def extract_result(out, err):
     if err:
         eprint("Error on extracting result\n")
         eprint(err)
-        return
+        sys.exit(1)
 
     res = re.search(r"total:\s+(.+)\s+MB/s skew", out)
 
