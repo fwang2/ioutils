@@ -212,14 +212,10 @@ def do_survey_lun():
                     for iomode in args.iomode:
                         for iter in range(args.iters):
                             cmd = cmd_str2([host], [lun], iomode, qd, bs)
-                            if args.verbose:
+                            if args.verbose or args.dryrun:
                                 print "\t", cmd
-                            else:
-                                print
 
-                            if args.dryrun:
-                                print "\t", cmd
-                            else:
+                            if not args.dryrun:
                                 p = subprocess.Popen(shlex.split(cmd), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                                 stdout, stderr = p.communicate()
                                 bw = extract_result(stdout, stderr)
