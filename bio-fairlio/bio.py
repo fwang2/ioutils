@@ -255,14 +255,10 @@ def do_survey_host():
 
         hprint("run %s/%s" % (index+1, len(runs)))
         cmd = cmd_str(args.hosts, devices, iomode, qd, bs, offset)
-        if args.verbose:
+        if args.verbose or args.dryrun:
             print "\t", cmd
-        else:
-            print
 
-        if args.dryrun:
-            print "dry run ..."
-        else:
+        if not args.dryrun:
             p = subprocess.Popen(shlex.split(cmd), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             stdout, stderr = p.communicate()
             bw = extract_result(stdout, stderr)
@@ -296,7 +292,8 @@ def main():
     ts = testutils.timestamp()
     output = "bio-run-results-%s.csv" % ts
     permuf = "bio-permu-%s.txt" % ts
-    record("host, devices, io-mode, block-size, queue-size, num-devices, bw, iter")
+    if not args.dryrun:
+        record("host, devices, io-mode, block-size, queue-size, num-devices, bw, iter")
 
     if args.verbose:
         print args
