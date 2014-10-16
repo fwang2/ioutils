@@ -67,7 +67,7 @@ def parse_args():
             default=[2, 4, 8, 16], help="a list of queue depth. Default: 2,4,8,16")
     parser.add_argument('--runtime', type=int, default=30, help="runtime per test, default: 30")
     parser.add_argument('--delay', type=int, default=5, help="delay in between test, default: 5")
-    parser.add_argument('--emailto', default="fwang2@gmail.com", help="email results to someone")
+    parser.add_argument('--emailto', default=None, help="email results to someone")
     parser.add_argument('--iomode', nargs="+",
             default=['seq_wr', 'seq_rd', 'rand_wr', 'rand_rd'],
             help="IO patterns for test, default: seq_wr, seq_rd, rand_wr, rand_rd")
@@ -162,16 +162,21 @@ def extract_result(out, err):
     return res.group(1).split()[1]
 
 
-def cmd_str2(hosts, devices, iomode, qd, bs, offset=0):
+def cmd_str(hosts, devices, iomode, qd, bs, offset=0):
     """
     expect hosts to be list involved in the test
     expect device to be list
     """
 
     cmd_args = []
+
+    if not isinstance(hosts, list):
+        hosts = [hosts]
+    if not isinstance(devices, list):
+        devices = [devices]
+
     hosts = ",".join(hosts)
     devices = " ".join(devices)
-
 
     ioflags = None
 
@@ -199,32 +204,33 @@ def cmd_str2(hosts, devices, iomode, qd, bs, offset=0):
     return " ".join(cmd_args)
 
 
+def iter_devices(host, devices):
+    """
+    for this host, and do permutation for specified device list
+    """
+    num_devs = len(devices)
+    for qd in args.qdepth:
+        for bs in args.blocksizes:
+            for iomode in args.iomode:
+                for iter in range(args.iters):
+                    cmd = cmd_str(host, devices, iomode, qd, bs)
+                    if args.verbose or args.dryrun:
+                        print "\t", cmd
+
+                    if not args.dryrun:
+                        p = subprocess.Popen(shlex.split(cmd), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                        stdout, stderr = p.communicate()
+                        bw = extract_result(stdout, stderr)
+                        record("%s, %s, %s, %s, %s, %s, %s, %s" % (host, devices, iomode, bs, qd, num_devs, bw, iter+1))
+
+                        time.sleep(args.delay)
+
+
 def do_survey_lun():
 
-    # number of devices involved in this kind of test
-    # one LUN
-    num_devs = 1
-
     for host in args.hosts:
-        for lun in args.devices:
-            for qd in args.qdepth:
-                for bs in args.blocksizes:
-                    for iomode in args.iomode:
-                        for iter in range(args.iters):
-                            cmd = cmd_str2([host], [lun], iomode, qd, bs)
-                            if args.verbose or args.dryrun:
-                                print "\t", cmd
-
-                            if not args.dryrun:
-                                p = subprocess.Popen(shlex.split(cmd), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-                                stdout, stderr = p.communicate()
-                                bw = extract_result(stdout, stderr)
-
-                                # record the result
-                                record("%s, %s, %s, %s, %s, %s, %s, %s" % (host, lun, iomode, bs, qd, num_devs, bw, iter+1))
-
-                                time.sleep(args.delay)
-
+        for dev in args.devices:
+            iter_devices(host, dev)
 
 def do_survey_host():
     global runs
@@ -244,11 +250,11 @@ def do_survey_host():
 
         # extract info
         # expecting devices to be a list
-        # since cmd_str2() expecting a list
+        # since cmd_str() expecting a list
         iomode, qd, bs, iter, offset, num_devs, devices = item
 
         hprint("run %s/%s" % (index+1, len(runs)))
-        cmd = cmd_str2(args.hosts, devices, iomode, qd, bs, offset)
+        cmd = cmd_str(args.hosts, devices, iomode, qd, bs, offset)
         if args.verbose:
             print "\t", cmd
         else:
@@ -313,11 +319,12 @@ def main():
 
     # email the testing results
 
-    testutils.send_mail("me",
-            [args.emailto],
-            "BIO test run %s" % output,  # subject
-            settings,                    # message body
-            files = [output])
+    if args.emailto is not None:
+        testutils.send_mail("me",
+                [args.emailto],
+                "BIO test run %s" % output,  # subject
+                settings,                    # message body
+                files = [output])
 
 if __name__ == "__main__": main()
 
