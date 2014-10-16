@@ -208,7 +208,7 @@ def iter_devices(host, devices):
     """
     for this host, and do permutation for specified device list
     """
-    num_devs = len(devices)
+    num_devs = 1 # only single device is allowed
     for qd in args.qdepth:
         for bs in args.blocksizes:
             for iomode in args.iomode:
