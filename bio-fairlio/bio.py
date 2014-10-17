@@ -108,9 +108,10 @@ def gen_system_settings():
 
     return settings
 
-def permu_with_devices(devices):
+def permu_parameters(devices):
     """
     given a list of devices, generate corresponding permutation
+    with parameters space
     """
     global runs
 
@@ -140,9 +141,9 @@ def gen_run_permutation():
 
         for n in steps:
             devlist = random.sample(devices, n)
-            permu_with_devices(devlist)
+            permu_parameters(devlist)
     else:
-        permu_with_devices(devices)
+        permu_parameters(devices)
 
 def extract_result(out, err):
     """
