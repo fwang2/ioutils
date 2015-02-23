@@ -1,4 +1,4 @@
-#!/bin/env python
+#!/usr/bin/env python
 import random
 import string
 import argparse
@@ -23,7 +23,7 @@ def parse_args():
     parser.add_argument('-c', '--fcount', type=int, default=1, help="total # of files")
     parser.add_argument('-o', '--output', required=True, help="output directory")
     parser.add_argument('-v', '--verbose', default=False, action="store_true", help="debug output")
-    parser.add_argument("--stripe-count", type=int, default=4, help="specify stripe count")
+    parser.add_argument("--stripe-count", type=int, help="specify stripe count")
 
     myargs = parser.parse_args()
     return myargs
@@ -73,7 +73,8 @@ def main():
         print("Detect exsiting %s, pls rename or remove to proceed" % outdir)
         exit(1)
 
-    setstripe(outdir)
+    if args.stripe_count:
+        setstripe(outdir)
 
     buf = rand_str()
 
