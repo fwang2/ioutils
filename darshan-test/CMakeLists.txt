@@ -34,4 +34,12 @@ endif ()
 
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/CMakeScripts)
 
+
+## MPI
+find_package(MPI REQUIRED)
+include_directories(SYSTEM ${MPI_INCLUDE_PATH})
+
 add_executable(fstdio fstdio.cc)
+
+add_executable(fstdio-mpi fstdio-mpi.cc)
+target_link_libraries(fstdio-mpi ${MPI_LIBRARIES})
