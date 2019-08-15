@@ -39,7 +39,12 @@ set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/CMakeScripts)
 find_package(MPI REQUIRED)
 include_directories(SYSTEM ${MPI_INCLUDE_PATH})
 
-add_executable(fstdio fstdio.cc)
+## Build
+add_executable(fprintf fprintf.cc)
+add_executable(fwrite fwrite.cc)
 
-add_executable(fstdio-mpi fstdio-mpi.cc)
-target_link_libraries(fstdio-mpi ${MPI_LIBRARIES})
+add_executable(fprintf-mpi fprintf-mpi.cc)
+target_link_libraries(fprintf-mpi ${MPI_LIBRARIES})
+
+add_executable(fwrite-mpi fwrite-mpi.cc)
+target_link_libraries(fwrite-mpi ${MPI_LIBRARIES})
