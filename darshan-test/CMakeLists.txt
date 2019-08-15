@@ -42,6 +42,7 @@ include_directories(SYSTEM ${MPI_INCLUDE_PATH})
 ## Build
 add_executable(fprintf fprintf.cc)
 add_executable(fwrite fwrite.cc)
+add_executable(write write.cc)
 
 add_executable(fprintf-mpi fprintf-mpi.cc)
 target_link_libraries(fprintf-mpi ${MPI_LIBRARIES})
