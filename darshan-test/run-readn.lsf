@@ -1,0 +1,20 @@
+#!/bin/bash
+#BSUB -P STF008
+#BSUB -W 1:00
+#BSUB -nnodes 2
+#BSUB -J readn
+#BSUB -o readn.%J
+#BSUB -e readn.%J
+
+cd $MEMBERWORK/stf008
+pwd
+# 2 resource set, 1 core per rs, 1 rs per host, 1 rank per rs
+echo "this run has no console output"
+BINPATH="./ioutils/darshan-test/build"
+cd $BINPATH
+#rm -f file.txt
+date
+jsrun -n2 -c1 -r1 -a1 ./readn
+date
+
+

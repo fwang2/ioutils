@@ -20,16 +20,19 @@ void do_read()
     fclose(fp);
 }
 
-void do_write() {
-    fp = fopen( "file.txt" , "a" );
+void do_write(int rank) {
+    char 
+    fp = fopen("file.txt" , "w" );
     fwrite(buf , sizeof(char), sizeof(buf) , fp );
     fclose(fp);
   
 }
 
 int main () {
+    int rank;
     MPI_Init(nullptr, nullptr);
-    do_read();
+    do_write(rank);
+    do_read(rank);
     MPI_Finalize();
     return(0);
 }

@@ -44,6 +44,9 @@ add_executable(fprintf fprintf.cc)
 add_executable(fwrite fwrite.cc)
 add_executable(write write.cc)
 
+add_executable(readn readn.cc)
+target_link_libraries(readn ${MPI_LIBRARIES})
+
 add_executable(fprintf-mpi fprintf-mpi.cc)
 target_link_libraries(fprintf-mpi ${MPI_LIBRARIES})
 

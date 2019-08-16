@@ -1,0 +1,19 @@
+#!/bin/bash
+#BSUB -P STF008
+#BSUB -W 1:00
+#BSUB -nnodes 2
+#BSUB -J fstdio
+#BSUB -o fstdio.%J
+#BSUB -e fstdio.%J
+
+cd $MEMBERWORK/stf008
+pwd
+# 2 resource set, 1 core per rs, 1 rs per host, 1 rank per rs
+
+BINPATH="./ioutils/darshan-test/build"
+
+date
+jsrun -n2 -c1 -r1 -a1 $BINPATH/fstdio-mpi
+date
+
+

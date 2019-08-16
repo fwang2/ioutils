@@ -10,7 +10,7 @@ int fd;
 void do_write() {
 
     fd = open(".", O_CREAT|O_WRONLY|O_APPEND);
-    write(fd, buf); 
+    //write(fd, buf, ); 
     close(fd);
 }
 
