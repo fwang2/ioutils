@@ -1,0 +1,19 @@
+#!/bin/bash
+#BSUB -P STF008
+#BSUB -W 1:00
+#BSUB -nnodes 2
+#BSUB -J mpiio-shared-write 
+#BSUB -o mpiio-shared-write.%J
+#BSUB -e mpiio-shared-write.%J
+
+cd $MEMBERWORK/stf008
+pwd
+# 2 resource set, 1 core per rs, 1 rs per host, 1 rank per rs
+
+BINPATH="./ioutils/darshan-test/build"
+cd $BINPATH
+date
+jsrun -n2 -c1 -r1 -a1 ./mpiio-shared-write
+date
+
+

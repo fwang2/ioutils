@@ -52,3 +52,24 @@ target_link_libraries(fprintf-mpi ${MPI_LIBRARIES})
 
 add_executable(fwrite-mpi fwrite-mpi.cc)
 target_link_libraries(fwrite-mpi ${MPI_LIBRARIES})
+
+add_executable(mpiio-single-file mpiio-single-file.cc)
+target_link_libraries(mpiio-single-file ${MPI_LIBRARIES})
+
+#add_executable(read-after-write read-after-write.cc)
+#target_link_libraries(read-after-write ${MPI_LIBRARIES})
+
+add_executable(mpiio-shared-write mpiio-shared-write.cc)
+target_link_libraries(mpiio-shared-write ${MPI_LIBRARIES})
+
+add_executable(mpiio-shared-read mpiio-shared-read.cc)
+target_link_libraries(mpiio-shared-read ${MPI_LIBRARIES})
+
+add_executable(mpiio-shared-raw mpiio-shared-raw.cc)
+target_link_libraries(mpiio-shared-raw ${MPI_LIBRARIES})
+
+
+
+
+
+

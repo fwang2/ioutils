@@ -1,0 +1,15 @@
+#!/bin/bash
+#BSUB -P STF008
+#BSUB -W 1:00
+#BSUB -nnodes 2
+#BSUB -J mpiio-shared-read
+#BSUB -o mpiio-shared-read.%J
+#BSUB -e mpiio-shared-read.%J
+
+cd $MEMBERWORK/stf008/ioutils/darshan-test/build
+
+# 2 resource set, 1 core per rs, 1 rs per host, 1 rank per rs
+
+echo "shared read test"
+jsrun -n2 -c1 -r1 -a1 ./mpiio-shared-read
+

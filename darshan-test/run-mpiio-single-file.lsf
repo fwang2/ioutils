@@ -1,0 +1,20 @@
+#!/bin/bash
+#BSUB -P STF008
+#BSUB -W 1:00
+#BSUB -nnodes 2
+#BSUB -J mpiio-single-file 
+#BSUB -o mpiio-single-file.%J
+#BSUB -e mpiio-single-file.%J
+
+cd $MEMBERWORK/stf008
+pwd
+# 2 resource set, 1 core per rs, 1 rs per host, 1 rank per rs
+
+BINPATH="./ioutils/darshan-test/build"
+cd $BINPATH
+rm -f file.txt
+date
+jsrun -n2 -c1 -r1 -a1 ./mpiio-single-file
+date
+
+
