@@ -62,6 +62,10 @@ target_link_libraries(mpiio-single-file ${MPI_LIBRARIES})
 add_executable(mpiio-shared-write mpiio-shared-write.cc)
 target_link_libraries(mpiio-shared-write ${MPI_LIBRARIES})
 
+add_executable(dxt-mpiio-shared-write dxt-mpiio-shared-write.cc)
+target_link_libraries(dxt-mpiio-shared-write ${MPI_LIBRARIES})
+
+
 add_executable(mpiio-shared-read mpiio-shared-read.cc)
 target_link_libraries(mpiio-shared-read ${MPI_LIBRARIES})
 
