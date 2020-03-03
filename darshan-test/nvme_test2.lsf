@@ -1,0 +1,19 @@
+#!/bin/bash
+#BSUB -P STF008
+#BSUB -W 1:00
+#BSUB -nnodes 2
+#BSUB -J nvme_test 
+#BSUB -o nvme_test.o%J
+#BSUB -e nvme_test.e%J
+#BSUB -alloc_flags NVME
+
+module load python
+export DXT_ENABLE_IO_TRACE=1
+
+pwd
+# 2 resource set, 1 core per rs, 1 rs per host, 1 rank per rs
+date
+jsrun -n2 -c1 -r1 -a1 dd if=/dev/zero of=/mnt/bb/$USER/file.txt count=1024 bs=1024 
+date
+
+
