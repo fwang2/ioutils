@@ -1,0 +1,18 @@
+#!/bin/bash
+#BSUB -P STF008
+#BSUB -W 1:00
+#BSUB -nnodes 2
+#BSUB -J darshan_py_subprocess2
+#BSUB -o darshan_py_subprocess2.%J
+#BSUB -e darshan_py_subprocess2.%J
+
+module load python
+export DXT_ENABLE_IO_TRACE=1
+
+pwd
+# 2 resource set, 1 core per rs, 1 rs per host, 1 rank per rs
+date
+jsrun -n2 -c1 -r1 -a1 python darshan-py-subprocess2.py 
+date
+
+

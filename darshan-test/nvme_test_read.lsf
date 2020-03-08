@@ -1,0 +1,18 @@
+#!/bin/bash
+#BSUB -P STF008
+#BSUB -W 1:00
+#BSUB -nnodes 2
+#BSUB -J nvme_test_read
+#BSUB -o nvme_test_read.%J
+#BSUB -e nvme_test_read.%J
+#BSUB -alloc_flags NVME
+
+module load python
+export DXT_ENABLE_IO_TRACE=1
+
+pwd
+# 2 resource set, 1 core per rs, 1 rs per host, 1 rank per rs
+date
+jsrun -n2 -c1 -r1 -a1 python nvme_test_read.py /mnt/bb/$USER /gpfs/alpine/scratch/$USER/stf008
+date
+
