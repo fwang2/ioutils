@@ -1,0 +1,24 @@
+#!/bin/bash
+#BSUB -P STF008
+#BSUB -W 1:00
+#BSUB -nnodes 2
+#BSUB -J ior-2n-4p
+#BSUB -o ior-2n-4p.o%J
+
+pwd
+# 2 resource set, 1 core per rs, 1 rs per host, 1 rank per rs
+
+INTERFACE="POSIX"
+BSIZE="32g"
+TSIZE="8m"
+
+TDIR="$MEMBERWORK/stf008/ior_test_dir"
+
+date
+rm -rf ${TDIR}
+mkdir -p ${TDIR}
+
+jsrun -n4 -c1 -r2 -a1 $MEMBERWORK/stf008/IORBIN/ior_ppc -F -o ${TDIR}/fpp -i 1 -b ${BSIZE} -t ${TSIZE} -w -r -C -g -a ${INTERFACE} -e -v -v
+
+date
+
